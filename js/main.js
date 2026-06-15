@@ -77,12 +77,14 @@
 
       periodTasks.forEach(task => {
         const item = document.createElement('div');
-        item.className = `task-item ${task.completed ? 'completed' : ''} ${task.isAlert ? 'alert-item' : ''}`;
+        item.className = `task-item ${task.completed ? 'completed' : ''} ${task.isAlert ? 'alert-item' : ''} ${task.isRestDay ? 'rest-item' : ''}`;
         item.dataset.id = task.id;
 
         // Tags
         let tagsHTML = '';
-        if (task.isAlert) {
+        if (task.isRestDay) {
+          tagsHTML += `<span class="tag-badge tag-rest">🛋️ Folga</span>`;
+        } else if (task.isAlert) {
           tagsHTML += `<span class="tag-badge tag-alert">⚠️ IMPORTANTE</span>`;
         } else {
           const cleanText = task.text.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");

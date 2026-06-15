@@ -20,6 +20,21 @@
     const dObj = new Date(dateStr + 'T12:00:00');
     const dayOfWeek = dObj.getDay(); // 0 = Domingo, 1 = Segunda, 2 = Terça, 3 = Quarta, 4 = Quinta, 5 = Sexta, 6 = Sábado
     
+    // Sábado ou Domingo: Dia de descanso (Folga)
+    if (dayOfWeek === 0 || dayOfWeek === 6) {
+      return [
+        {
+          id: 'r_rest_' + dateStr,
+          text: "Dia de descanso 😴 - Aproveite o fim de semana!",
+          period: "manha",
+          completed: true,
+          createdAt: Date.now(),
+          date: dateStr,
+          isRestDay: true
+        }
+      ];
+    }
+
     const dayRoutine = [
       { id: 'r1_' + dateStr, text: "Checar e-mails, Usecar e Docusign", period: "manha", completed: false, createdAt: Date.now() - 50000, date: dateStr },
       { id: 'r2_' + dateStr, text: "Responder mensagens de funcionários e hotéis", period: "manha", completed: false, createdAt: Date.now() - 40000, date: dateStr },
