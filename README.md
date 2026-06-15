@@ -1,41 +1,79 @@
-# 3A Logistics - Painel de Produtividade Diária
+# 3A Logistics - Controle de Rotina e Histórico de Desempenho
 
-Painel interativo e moderno focado no controle operacional de rotinas logísticas, administrativas e financeiras para a **3A Logistics**.
-
-## 🚀 Funcionalidades
-
-- **Carga de Rotina Diária**: Inicialização automática com as tarefas essenciais do dia caso o armazenamento esteja vazio.
-- **Smart Tags (Categorização Automática)**:
-  - 🏨 **Hotel**: Identificada quando o texto contém "hotel" ou "hoteis".
-  - 💼 **Financeiro / Diretoria**: Identificada quando o texto contém "chefe", "pagamento", "boleto" ou "passar".
-- **Ordenação Inteligente**: 
-  - Demandas marcadas como **Urgente** ou vinculadas a tags **Financeiras** são fixadas no topo com destaque visual (borda vermelha).
-  - Tarefas marcadas como **Concluídas** descem para o final com opacidade reduzida e texto tachado.
-- **Persistência**: Progresso salvo no `LocalStorage` do navegador em tempo real.
-- **Métricas do Dia**: Indicador de progresso dinâmico com porcentagem e data por extenso em português.
+Uma agenda de trabalho diária interativa, minimalista e altamente responsiva inspirada nas melhores ferramentas de organização do mercado (**Notion**, **Google Calendar** e **Todoist**). O sistema é estruturado em uma arquitetura front-end limpa, modular e otimizada, pronta para ser executada localmente sem a necessidade de dependências complexas.
 
 ---
 
-## 💻 Como Abrir e Executar o Painel
+## 🚀 Funcionalidades Principais
 
-Como este projeto foi construído utilizando **HTML5, CSS3 e JavaScript Vanilla** de forma totalmente autônoma, ele não necessita de nenhuma instalação de dependências ou build.
+* **Abas de Navegação Dinâmicas**:
+  * **📅 Agenda Diária**: Linha do tempo dividida por períodos do dia (Manhã, Tarde, Fim do Expediente) com painel lateral fixo para entrada rápida de ideias (*Inbox*).
+  * **🎯 Metas Futuras**: Kanban board visual e responsivo para planejar e controlar metas de curto/médio prazo (A Fazer, Em Andamento, Concluído).
+  * **📊 Desempenho & Histórico**: Dashboard com indicadores-chave, histórico de dias anteriores e um gráfico de produtividade dos últimos 7 dias.
+* **Modelo de Template de Rotina Diária**:
+  * Ao navegar para qualquer nova data, a agenda gera automaticamente a lista padrão de tarefas operacionais diárias.
+* **Alertas Inteligentes no Calendário**:
+  * Nas segundas e sextas-feiras, o sistema insere um alerta amarelo em destaque (`⚠️ IMPORTANTE`) sinalizando a necessidade de confecção da planilha Excel de pagamentos da semana.
+* **Interatividade & Persistência**:
+  * Botões circulares de checkbox com efeito de transição Todoist.
+  * Links interativos nas barras de estatísticas: clique em qualquer dia do histórico ou barra do gráfico para carregar imediatamente a agenda daquela data!
+  * Salvamento em tempo real e persistência total via `LocalStorage`.
 
-Você pode abri-lo de três formas super simples:
+---
 
-### Opção 1: Abrir diretamente pelo arquivo (Mais Fácil)
-1. Abra a pasta do projeto no explorador de arquivos do seu sistema operacional.
-2. Dê um **duplo clique** no arquivo `index.html`. Ele será aberto imediatamente no seu navegador padrão.
+## 📂 Estrutura do Projeto
 
-### Opção 2: Pelo menu do seu Navegador
-1. Abra o seu navegador preferido (Google Chrome, Firefox, Microsoft Edge, etc).
-2. Pressione o atalho `Ctrl + O` (no Windows/Linux) ou `Cmd + O` (no Mac).
-3. Selecione o arquivo `index.html` na pasta do projeto e clique em **Abrir**.
+A organização de pastas foi estruturada de forma modular, respeitando as boas práticas de engenharia de software front-end:
 
-### Opção 3: Usando um Servidor Local Rápido (Opcional - Recomendado para Devs)
-Se você tem o Python instalado no seu terminal:
 ```bash
-python3 -m http.server 8080
+📂 own-project-3a-logistics/
+├── 📂 css/
+│   └── styles.css          # Variáveis, design tokens, layout grids e animações
+├── 📂 js/
+│   ├── db.js               # Gerenciador de persistência local, CRUD e cargas padrões
+│   ├── goals.js            # Módulo de renderização do painel Kanban de Metas
+│   ├── analytics.js        # Motor de cálculos de performance e render do gráfico
+│   └── main.js             # Controlador central, inputs e inicialização do DOM
+├── .gitignore              # Arquivos temporários do OS ou IDE ignorados pelo Git
+├── LICENSE                 # Licença MIT permissiva de código aberto
+├── README.md               # Documentação técnica e guia do usuário
+└── index.html              # Ponto de entrada (esqueleto HTML estruturado)
 ```
-Depois, acesse no navegador: `http://localhost:8080`
 
-Ou, caso use o **VS Code**, basta instalar a extensão **Live Server** e clicar em **Go Live** no canto inferior direito.
+---
+
+## 💻 Como Executar o Projeto
+
+Como o código utiliza namespaces globais estruturados na inicialização sequencial e evita módulos locais protegidos por CORS, **você pode executar o projeto de duas formas**:
+
+### Opção 1: Duplo Clique (Sem Servidor Local)
+1. Abra a pasta do projeto no explorador de arquivos.
+2. Dê um **duplo clique** no arquivo `index.html`. Ele abrirá normalmente e funcionará perfeitamente direto no navegador padrão via protocolo `file://`.
+
+### Opção 2: Servidor Local de Desenvolvimento (Recomendado)
+Se preferir rodar com um servidor web para simular um ambiente real:
+* Com **VS Code**: Instale a extensão **Live Server** e clique em **Go Live** no canto inferior direito.
+* Com **Python**:
+  ```bash
+  python3 -m http.server 8080
+  ```
+  E acesse no navegador: `http://localhost:8080`
+* Com **Node.js**:
+  ```bash
+  npx http-server -p 8080
+  ```
+
+---
+
+## 🛠️ Tecnologias Utilizadas
+
+* **HTML5** Semântico.
+* **CSS3** Moderno (Grid Layouts, Flexbox, Custom CSS Variables, transições cúbicas e Keyframe Animations).
+* **JavaScript Vanilla (ES6)** modularizado com escopos protegidos (IIFE).
+* **Google Fonts (Inter)**.
+
+---
+
+## 📄 Licença
+
+Este projeto está sob a licença MIT. Consulte o arquivo [LICENSE](LICENSE) para obter mais detalhes.
