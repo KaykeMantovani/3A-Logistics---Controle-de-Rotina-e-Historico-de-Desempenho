@@ -1,0 +1,1760 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>3A Logistics | Agenda & Histórico Operacional</title>
+  <!-- Google Fonts: Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-main: #18181b;
+      --bg-block: #27272a;
+      --border-color: #3f3f46;
+      --color-primary: #2563eb;
+      --color-primary-hover: #1d4ed8;
+      --color-text-main: #f4f4f5;
+      --color-text-muted: #a1a1aa;
+      --color-tag-hotel-text: #60a5fa;
+      --color-tag-finance-text: #f87171;
+      --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-main);
+      color: var(--color-text-main);
+      font-family: var(--font-sans);
+      line-height: 1.6;
+      padding: 3rem 1.5rem;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+    }
+
+    .container {
+      max-width: 1100px;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Cabeçalho */
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 1.5rem;
+      margin-bottom: 1.5rem;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .header-left h1 {
+      font-size: 1.35rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      color: #fff;
+    }
+
+    .date-text {
+      font-size: 0.85rem;
+      color: var(--color-text-muted);
+      font-weight: 500;
+      margin-top: 0.25rem;
+    }
+
+    .progress-container {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .progress-percentage {
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--color-primary);
+    }
+
+    .progress-track {
+      width: 150px;
+      height: 6px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border-color);
+      border-radius: 9999px;
+      overflow: hidden;
+    }
+
+    .progress-bar {
+      height: 100%;
+      width: 0%;
+      background: var(--color-primary);
+      border-radius: 9999px;
+      transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* Navegação por Abas */
+    .app-nav {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 2rem;
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 0.75rem;
+      flex-wrap: wrap;
+    }
+
+    .nav-btn {
+      background: transparent;
+      border: none;
+      color: var(--color-text-muted);
+      font-family: var(--font-sans);
+      font-size: 0.875rem;
+      font-weight: 600;
+      padding: 0.5rem 1rem;
+      cursor: pointer;
+      border-radius: 8px;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      outline: none;
+    }
+
+    .nav-btn:hover {
+      color: var(--color-text-main);
+      background: rgba(255, 255, 255, 0.04);
+    }
+
+    .nav-btn.active {
+      color: #fff;
+      background: var(--color-primary);
+    }
+
+    /* Tab Content Wrappers */
+    .tab-content {
+      animation: fadeIn 0.3s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Navegador de Data (Agenda) */
+    .agenda-nav-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .date-navigator {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .nav-arrow-btn {
+      background: var(--bg-block);
+      border: 1px solid var(--border-color);
+      color: var(--color-text-main);
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 0.85rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s ease;
+      outline: none;
+    }
+
+    .nav-arrow-btn:hover {
+      background: var(--border-color);
+    }
+
+    .agenda-date-input {
+      background: var(--bg-block);
+      border: 1px solid var(--border-color);
+      color: var(--color-text-main);
+      padding: 0.35rem 0.75rem;
+      border-radius: 8px;
+      font-family: inherit;
+      font-size: 0.85rem;
+      outline: none;
+      cursor: pointer;
+    }
+
+    .btn-today-shortcut {
+      background: rgba(37, 99, 235, 0.12);
+      border: 1px solid rgba(37, 99, 235, 0.25);
+      color: var(--color-tag-hotel-text);
+      padding: 0.35rem 0.75rem;
+      border-radius: 8px;
+      font-family: inherit;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      outline: none;
+    }
+
+    .btn-today-shortcut:hover {
+      background: var(--color-primary);
+      color: #fff;
+    }
+
+    /* Entrada Rápida Formulário */
+    .quick-input-card {
+      background: var(--bg-block);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 1.25rem;
+      margin-bottom: 2rem;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    }
+
+    .quick-form {
+      display: grid;
+      grid-template-columns: 1fr 200px 130px;
+      gap: 0.75rem;
+      align-items: center;
+    }
+
+    @media (max-width: 640px) {
+      .quick-form {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .form-input-text {
+      background: rgba(0, 0, 0, 0.25);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      color: var(--color-text-main);
+      padding: 0.7rem 0.9rem;
+      font-family: inherit;
+      font-size: 0.875rem;
+      outline: none;
+      transition: all 0.2s ease;
+      width: 100%;
+    }
+
+    .form-input-text:focus {
+      border-color: var(--color-primary);
+      box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2);
+    }
+
+    .form-select-period {
+      background: rgba(0, 0, 0, 0.25);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      color: var(--color-text-main);
+      padding: 0.7rem 2rem 0.7rem 0.9rem;
+      font-family: inherit;
+      font-size: 0.875rem;
+      outline: none;
+      cursor: pointer;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%23a1a1aa'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 0.75rem center;
+      background-size: 1rem;
+      width: 100%;
+      transition: all 0.2s ease;
+    }
+
+    .form-select-period:focus {
+      border-color: var(--color-primary);
+    }
+
+    .btn-add {
+      background: var(--color-primary);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 0.7rem 1rem;
+      font-family: inherit;
+      font-weight: 600;
+      font-size: 0.875rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.4rem;
+      transition: background 0.2s ease;
+      width: 100%;
+    }
+
+    .btn-add:hover {
+      background: var(--color-primary-hover);
+    }
+
+    /* Estrutura Dashboard */
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: 1.8fr 1fr;
+      gap: 2rem;
+      align-items: start;
+    }
+
+    @media (max-width: 900px) {
+      .dashboard-grid {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+      }
+    }
+
+    /* Coluna Principal: Linha do Tempo */
+    .timeline-column {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    .period-block {
+      background: var(--bg-block);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 1.5rem;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+    }
+
+    .period-header {
+      font-size: 0.8rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 0.75rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .task-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    /* Task Card Styles */
+    .task-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.75rem;
+      padding: 0.75rem 1rem;
+      border-radius: 8px;
+      background: rgba(24, 24, 27, 0.45);
+      border: 1px solid transparent;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .task-item:hover {
+      border-color: var(--border-color);
+      background: rgba(24, 24, 27, 0.85);
+    }
+
+    /* Alerta Especial para Segundas e Sextas */
+    .task-item.alert-item {
+      background: rgba(245, 158, 11, 0.08);
+      border: 1px solid rgba(245, 158, 11, 0.25);
+    }
+
+    .task-item.alert-item:hover {
+      background: rgba(245, 158, 11, 0.14);
+      border-color: rgba(245, 158, 11, 0.45);
+    }
+
+    .task-item.alert-item .task-text {
+      color: #fbbf24;
+      font-weight: 600;
+    }
+
+    .task-checkbox-btn {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      border: 2px solid var(--color-text-muted);
+      background: transparent;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0;
+      flex-shrink: 0;
+      transition: all 0.2s ease;
+      margin-top: 2px;
+      outline: none;
+    }
+
+    .task-checkbox-btn:hover {
+      border-color: var(--color-primary);
+      background: rgba(37, 99, 235, 0.1);
+    }
+
+    .task-checkbox-btn.checked {
+      background: var(--color-primary);
+      border-color: var(--color-primary);
+    }
+
+    .task-checkbox-btn svg {
+      width: 9px;
+      height: 9px;
+      stroke: #fff;
+      stroke-width: 4.5px;
+      display: none;
+    }
+
+    .task-checkbox-btn.checked svg {
+      display: block;
+    }
+
+    .task-content {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+
+    .task-text {
+      font-size: 0.875rem;
+      color: var(--color-text-main);
+      transition: all 0.2s ease;
+      word-break: break-word;
+    }
+
+    .task-item.completed .task-text {
+      text-decoration: line-through;
+      color: var(--color-text-muted);
+      opacity: 0.55;
+    }
+
+    .task-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .period-move-select {
+      background: transparent;
+      border: 1px solid transparent;
+      color: var(--color-text-muted);
+      font-size: 0.7rem;
+      font-family: inherit;
+      cursor: pointer;
+      outline: none;
+      padding: 0.15rem 0.25rem;
+      border-radius: 4px;
+      opacity: 0;
+      transition: all 0.15s ease;
+    }
+
+    .task-item:hover .period-move-select {
+      opacity: 1;
+      border-color: var(--border-color);
+    }
+
+    .period-move-select:focus {
+      opacity: 1;
+      border-color: var(--color-primary);
+      background: var(--bg-main);
+      color: var(--color-text-main);
+    }
+
+    .btn-delete-task {
+      background: none;
+      border: none;
+      color: var(--color-text-muted);
+      cursor: pointer;
+      opacity: 0;
+      transition: opacity 0.15s ease, color 0.15s ease;
+      padding: 0.2rem;
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .task-item:hover .btn-delete-task {
+      opacity: 1;
+    }
+
+    .btn-delete-task:hover {
+      color: #ef4444;
+      background: rgba(239, 68, 68, 0.08);
+    }
+
+    /* Tag Styling */
+    .tag-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.25rem;
+      padding: 0.15rem 0.45rem;
+      border-radius: 4px;
+      font-size: 0.65rem;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+      text-transform: uppercase;
+      margin-left: 0.5rem;
+      vertical-align: middle;
+    }
+
+    .tag-hotel {
+      background-color: rgba(37, 99, 235, 0.12);
+      color: var(--color-tag-hotel-text);
+      border: 1px solid rgba(37, 99, 235, 0.25);
+    }
+
+    .tag-finance {
+      background-color: rgba(239, 68, 68, 0.12);
+      color: var(--color-tag-finance-text);
+      border: 1px solid rgba(239, 68, 68, 0.25);
+    }
+
+    .tag-alert {
+      background-color: rgba(245, 158, 11, 0.15);
+      color: #fbbf24;
+      border: 1px solid rgba(245, 158, 11, 0.3);
+    }
+
+    /* Coluna Lateral: Inbox */
+    .sidebar-column {
+      position: sticky;
+      top: 3rem;
+    }
+
+    @media (max-width: 900px) {
+      .sidebar-column {
+        position: static;
+      }
+    }
+
+    .inbox-card {
+      background: var(--bg-block);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 1.5rem;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+    }
+
+    .inbox-header {
+      font-size: 0.85rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 0.75rem;
+      margin-bottom: 1rem;
+    }
+
+    .inbox-desc {
+      font-size: 0.75rem;
+      color: var(--color-text-muted);
+      margin-bottom: 1.25rem;
+      line-height: 1.4;
+    }
+
+    /* Kanban de Metas Futuras */
+    .goals-board {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+    }
+
+    @media (max-width: 768px) {
+      .goals-board {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+      }
+    }
+
+    .goal-column {
+      background: var(--bg-block);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 1.25rem;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+    }
+
+    .goal-col-header {
+      font-size: 0.8rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: #fff;
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 0.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .goal-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      min-height: 200px;
+    }
+
+    .goal-item {
+      background: rgba(24, 24, 27, 0.4);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 0.85rem 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      transition: all 0.2s ease;
+    }
+
+    .goal-item:hover {
+      border-color: var(--color-primary);
+      background: rgba(24, 24, 27, 0.85);
+    }
+
+    .goal-item-text {
+      font-size: 0.875rem;
+      color: var(--color-text-main);
+      word-break: break-word;
+    }
+
+    .goal-item-actions {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-top: 1px solid rgba(255, 255, 255, 0.04);
+      padding-top: 0.5rem;
+      margin-top: 0.25rem;
+    }
+
+    .btn-move-goal {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--border-color);
+      color: var(--color-text-muted);
+      font-size: 0.7rem;
+      font-weight: 600;
+      padding: 0.25rem 0.5rem;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      font-family: inherit;
+    }
+
+    .btn-move-goal:hover {
+      color: #fff;
+      border-color: var(--color-primary);
+      background: var(--color-primary);
+    }
+
+    .btn-delete-goal {
+      background: none;
+      border: none;
+      color: var(--color-text-muted);
+      cursor: pointer;
+      transition: color 0.15s ease;
+      padding: 0.2rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .btn-delete-goal:hover {
+      color: #ef4444;
+    }
+
+    /* Painel de Analytics (Desempenho) */
+    .analytics-container {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1rem;
+    }
+
+    @media (max-width: 640px) {
+      .stats-row {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .stat-card {
+      background: var(--bg-block);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+    }
+
+    .stat-title {
+      font-size: 0.725rem;
+      font-weight: 700;
+      color: var(--color-text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .stat-num {
+      font-size: 1.6rem;
+      font-weight: 800;
+      color: #fff;
+      margin-top: 0.25rem;
+    }
+
+    .stat-sub {
+      font-size: 0.7rem;
+      color: var(--color-text-muted);
+      margin-top: 0.25rem;
+    }
+
+    .chart-section-card {
+      background: var(--bg-block);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 1.5rem;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+    }
+
+    .chart-section-card h3 {
+      font-size: 0.8rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 1.5rem;
+      color: #fff;
+    }
+
+    .bar-chart-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      height: 180px;
+      padding: 1rem 0;
+      border-bottom: 2px solid var(--border-color);
+      gap: 0.5rem;
+    }
+
+    .chart-bar-wrapper {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      flex: 1;
+      height: 100%;
+      justify-content: flex-end;
+    }
+
+    .chart-bar {
+      width: 60%;
+      max-width: 45px;
+      background: linear-gradient(180deg, var(--color-primary) 0%, rgba(37, 99, 235, 0.35) 100%);
+      border-radius: 6px 6px 0 0;
+      min-height: 4px;
+      transition: height 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      cursor: pointer;
+    }
+
+    .chart-bar:hover {
+      background: linear-gradient(180deg, #60a5fa 0%, var(--color-primary) 100%);
+    }
+
+    .chart-tooltip {
+      position: absolute;
+      top: -32px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #000;
+      color: #fff;
+      font-size: 0.7rem;
+      font-weight: 700;
+      padding: 0.25rem 0.5rem;
+      border-radius: 6px;
+      border: 1px solid var(--border-color);
+      opacity: 0;
+      transition: opacity 0.15s ease;
+      pointer-events: none;
+      white-space: nowrap;
+      z-index: 10;
+    }
+
+    .chart-bar:hover .chart-tooltip {
+      opacity: 1;
+    }
+
+    .chart-day-label {
+      font-size: 0.75rem;
+      color: var(--color-text-muted);
+      margin-top: 0.5rem;
+      font-weight: 600;
+      text-align: center;
+    }
+
+    .chart-ratio-label {
+      font-size: 0.65rem;
+      color: var(--color-text-muted);
+      opacity: 0.8;
+      margin-top: 0.1rem;
+    }
+
+    .history-section-card {
+      background: var(--bg-block);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 1.5rem;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+    }
+
+    .history-section-card h3 {
+      font-size: 0.8rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 1rem;
+      color: #fff;
+    }
+
+    .history-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .history-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.75rem 1rem;
+      border-radius: 8px;
+      background: rgba(24, 24, 27, 0.45);
+      border: 1px solid transparent;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .history-row:hover {
+      border-color: var(--border-color);
+      background: rgba(24, 24, 27, 0.85);
+    }
+
+    .history-row-left {
+      display: flex;
+      flex-direction: column;
+      gap: 0.15rem;
+    }
+
+    .history-date {
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: var(--color-text-main);
+    }
+
+    .history-ratio {
+      font-size: 0.75rem;
+      color: var(--color-text-muted);
+    }
+
+    .history-progress-wrapper {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .history-percentage {
+      font-size: 0.8rem;
+      font-weight: 700;
+    }
+
+    .history-percentage.low { color: #f87171; }
+    .history-percentage.mid { color: #fbbf24; }
+    .history-percentage.high { color: #34d399; }
+
+    /* Placeholders e Scrollbars */
+    .empty-placeholder {
+      font-size: 0.75rem;
+      color: var(--color-text-muted);
+      opacity: 0.5;
+      text-align: center;
+      padding: 1rem;
+      border: 1px dashed rgba(255,255,255,0.06);
+      border-radius: 8px;
+      background: rgba(255,255,255,0.01);
+    }
+
+    ::-webkit-scrollbar {
+      width: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: var(--bg-main);
+    }
+    ::-webkit-scrollbar-thumb {
+      background: var(--border-color);
+      border-radius: 3px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: var(--color-text-muted);
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Cabeçalho Principal -->
+    <header>
+      <div class="header-left">
+        <h1>3A Logistics | Controle de Rotina</h1>
+        <div id="current-date" class="date-text">Carregando data...</div>
+      </div>
+      <div class="progress-container">
+        <span id="progress-percent" class="progress-percentage">0%</span>
+        <div class="progress-track">
+          <div id="progress-bar" class="progress-bar"></div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Navegação de Abas -->
+    <nav class="app-nav">
+      <button class="nav-btn active" data-tab="agenda">📅 Agenda Diária</button>
+      <button class="nav-btn" data-tab="goals">🎯 Metas Futuras</button>
+      <button class="nav-btn" data-tab="analytics">📊 Desempenho & Histórico</button>
+    </nav>
+
+    <!-- ABA 1: AGENDA DIÁRIA -->
+    <div id="tab-content-agenda" class="tab-content">
+      <div class="agenda-nav-header">
+        <h2 id="selected-date-title" style="font-size: 1.1rem; font-weight: 700; color: #fff;">Agenda de Hoje</h2>
+        <div class="date-navigator">
+          <button id="btn-prev-day" class="nav-arrow-btn" title="Dia anterior">⟨</button>
+          <input type="date" id="agenda-date-picker" class="agenda-date-input" aria-label="Selecionar data">
+          <button id="btn-next-day" class="nav-arrow-btn" title="Próximo dia">⟩</button>
+          <button id="btn-today" class="btn-today-shortcut">Hoje</button>
+        </div>
+      </div>
+
+      <!-- Formulário de Entrada Rápida -->
+      <section class="quick-input-card">
+        <form id="task-form" class="quick-form">
+          <input 
+            type="text" 
+            id="task-input" 
+            class="form-input-text" 
+            placeholder="Adicionar nova demanda à agenda..." 
+            required
+            autocomplete="off"
+          >
+          <select id="task-period" class="form-select-period" aria-label="Selecione o período">
+            <option value="manha">🌅 Manhã</option>
+            <option value="tarde">☀️ Tarde</option>
+            <option value="noite">🌆 Fim do Expediente</option>
+            <option value="inbox">📥 Entrada / Inbox</option>
+          </select>
+          <button type="submit" class="btn-add">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+            Agendar
+          </button>
+        </form>
+      </section>
+
+      <!-- Dashboard Grid -->
+      <div class="dashboard-grid">
+        <main class="timeline-column">
+          <!-- Bloco Manhã -->
+          <section class="period-block">
+            <h2 class="period-header">🌅 MANHÃ (Foco em Comunicação e Triagem)</h2>
+            <div id="manha-list" class="task-list"></div>
+          </section>
+
+          <!-- Bloco Tarde -->
+          <section class="period-block">
+            <h2 class="period-header">☀️ TARDE (Foco em Processamento e Prazos)</h2>
+            <div id="tarde-list" class="task-list"></div>
+          </section>
+
+          <!-- Bloco Noite -->
+          <section class="period-block">
+            <h2 class="period-header">🌆 FIM DO EXPEDIENTE (Fechamento e Arquivo)</h2>
+            <div id="noite-list" class="task-list"></div>
+          </section>
+        </main>
+
+        <aside class="sidebar-column">
+          <section class="inbox-card">
+            <h2 class="inbox-header">📥 Entrada Rápida / Inbox</h2>
+            <p class="inbox-desc">Demandas que surgem no decorrer do dia. Utilize a opção de mover ao lado de cada tarefa para organizá-la na agenda.</p>
+            <div id="inbox-list" class="task-list"></div>
+          </section>
+        </aside>
+      </div>
+    </div>
+
+    <!-- ABA 2: METAS FUTURAS -->
+    <div id="tab-content-goals" class="tab-content" style="display: none;">
+      <section class="quick-input-card">
+        <form id="goal-form" class="quick-form">
+          <input 
+            type="text" 
+            id="goal-input" 
+            class="form-input-text" 
+            placeholder="Nova meta de longo prazo a planejar..." 
+            required
+            autocomplete="off"
+          >
+          <select id="goal-status" class="form-select-period" aria-label="Selecione o status da meta">
+            <option value="todo">📋 A Fazer</option>
+            <option value="in_progress">⚡ Em Progresso</option>
+            <option value="done">✅ Concluído</option>
+          </select>
+          <button type="submit" class="btn-add">
+            Criar Meta
+          </button>
+        </form>
+      </section>
+
+      <div class="goals-board">
+        <div class="goal-column">
+          <h3 class="goal-col-header">📋 A Fazer</h3>
+          <div id="goal-list-todo" class="goal-list"></div>
+        </div>
+        <div class="goal-column">
+          <h3 class="goal-col-header">⚡ Em Progresso</h3>
+          <div id="goal-list-in-progress" class="goal-list"></div>
+        </div>
+        <div class="goal-column">
+          <h3 class="goal-col-header">✅ Concluído</h3>
+          <div id="goal-list-done" class="goal-list"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ABA 3: DESEMPENHO E ANALYTICS -->
+    <div id="tab-content-analytics" class="tab-content" style="display: none;">
+      <div class="analytics-container">
+        <!-- Estatísticas Gerais -->
+        <div class="stats-row">
+          <div class="stat-card">
+            <span class="stat-title">Taxa de Conclusão</span>
+            <span id="stat-completion-rate" class="stat-num">0%</span>
+            <span class="stat-sub">Média de todas as tarefas da base</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-title">Total de Tarefas</span>
+            <span id="stat-total-tasks" class="stat-num">0</span>
+            <span class="stat-sub">Volume histórico registrado</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-title">Dia Mais Produtivo</span>
+            <span id="stat-peak-day" class="stat-num">-</span>
+            <span class="stat-sub">Maior índice de conclusões</span>
+          </div>
+        </div>
+
+        <!-- Gráfico Comparativo -->
+        <div class="chart-section-card">
+          <h3>📊 Produtividade dos Últimos 7 Dias (Clique nas barras para navegar até o dia)</h3>
+          <div id="bar-chart" class="bar-chart-container"></div>
+        </div>
+
+        <!-- Histórico Recente -->
+        <div class="history-section-card">
+          <h3>📜 Histórico de Dias Anteriores (Clique para navegar e editar)</h3>
+          <div id="history-days-list" class="history-list"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Formatar data localmente em YYYY-MM-DD
+    function toISOStringLocal(date) {
+      const y = date.getFullYear();
+      const m = String(date.getMonth() + 1).padStart(2, '0');
+      const d = String(date.getDate()).padStart(2, '0');
+      return `${y}-${m}-${d}`;
+    }
+
+    // Gerador de offset de data anterior
+    function getPastDateStr(offsetDays) {
+      const d = new Date();
+      d.setDate(d.getDate() - offsetDays);
+      return toISOStringLocal(d);
+    }
+
+    const todayStr = toISOStringLocal(new Date());
+
+    // Retorna a rotina diária padrão estruturada para um dia específico
+    function getRoutineTasksForDate(dateStr) {
+      const dObj = new Date(dateStr + 'T12:00:00');
+      const dayOfWeek = dObj.getDay(); // 0 = Domingo, 1 = Segunda, 2 = Terça, 3 = Quarta, 4 = Quinta, 5 = Sexta, 6 = Sábado
+      
+      const dayRoutine = [
+        { id: 'r1_' + dateStr, text: "Checar e-mails, Usecar e Docusign", period: "manha", completed: false, createdAt: Date.now() - 50000, date: dateStr },
+        { id: 'r2_' + dateStr, text: "Responder mensagens de funcionários e hotéis", period: "manha", completed: false, createdAt: Date.now() - 40000, date: dateStr },
+        { id: 'r3_' + dateStr, text: "Revisar e regulamentar pendências de hotéis da semana", period: "tarde", completed: false, createdAt: Date.now() - 30000, date: dateStr },
+        { id: 'r4_' + dateStr, text: "Compilar e passar pagamentos pendentes da semana para a chefe", period: "tarde", completed: false, createdAt: Date.now() - 20000, date: dateStr },
+        { id: 'r5_' + dateStr, text: "Organizar documentos físicos e realizar impressões necessárias", period: "noite", completed: false, createdAt: Date.now() - 10000, date: dateStr }
+      ];
+      
+      // Adicionar alerta importante nas segundas (1) e sextas (5)
+      if (dayOfWeek === 1 || dayOfWeek === 5) {
+        dayRoutine.unshift({
+          id: 'r_alert_' + dateStr,
+          text: "Fazer planilha Excel com os pagamentos da semana",
+          period: "manha",
+          completed: false,
+          createdAt: Date.now() - 60000,
+          date: dateStr,
+          isAlert: true // Marcação especial para estilização CSS amarela
+        });
+      }
+      
+      return dayRoutine;
+    }
+
+    // Garante que uma data visitada possua demandas geradas a partir da rotina
+    function ensureDateInitialized(dateStr) {
+      const existing = tasks.filter(t => t.date === dateStr);
+      if (existing.length === 0) {
+        const routine = getRoutineTasksForDate(dateStr);
+        tasks.push(...routine);
+        saveToLocalStorage();
+      }
+    }
+
+    // Banco de tarefas inicial (histórico padrão)
+    const defaultTasks = [
+      // Ontem
+      { id: 'y1', text: "Realizar conciliação bancária matinal", period: "manha", completed: true, createdAt: Date.now() - 86400000, date: getPastDateStr(1) },
+      { id: 'y2', text: "Arquivar boletos do Usecar", period: "tarde", completed: true, createdAt: Date.now() - 86400000 + 10, date: getPastDateStr(1) },
+      { id: 'y3', text: "Revisar check-in dos hotéis cadastrados", period: "tarde", completed: true, createdAt: Date.now() - 86400000 + 20, date: getPastDateStr(1) },
+      { id: 'y4', text: "Telefonar para chefe para alinhar relatórios", period: "manha", completed: false, createdAt: Date.now() - 86400000 + 30, date: getPastDateStr(1) },
+
+      // 2 Dias atrás
+      { id: 'd2_1', text: "Responder dúvidas sobre faturamento", period: "manha", completed: true, createdAt: Date.now() - 172800000, date: getPastDateStr(2) },
+      { id: 'd2_2', text: "Auditar faturas de hotéis pendentes", period: "tarde", completed: true, createdAt: Date.now() - 172800000 + 10, date: getPastDateStr(2) },
+      { id: 'd2_3', text: "Enviar documentos Docusign assinados", period: "noite", completed: true, createdAt: Date.now() - 172800000 + 20, date: getPastDateStr(2) },
+
+      // 3 Dias atrás
+      { id: 'd3_1', text: "Organizar fluxo de caixa", period: "tarde", completed: true, createdAt: Date.now() - 259200000, date: getPastDateStr(3) },
+      { id: 'd3_2', text: "Enviar e-mails de cobrança", period: "manha", completed: false, createdAt: Date.now() - 259200000 + 10, date: getPastDateStr(3) },
+
+      // 4 Dias atrás
+      { id: 'd4_1', text: "Compilar dados operacionais do Docusign", period: "tarde", completed: true, createdAt: Date.now() - 345600000, date: getPastDateStr(4) },
+      { id: 'd4_2', text: "Responder e-mails de hotéis urgentes", period: "manha", completed: true, createdAt: Date.now() - 345600000 + 10, date: getPastDateStr(4) }
+    ];
+
+    // Banco de metas inicial
+    const defaultGoals = [
+      { id: 'g1', text: "Digitalizar todo o arquivo físico de faturas", status: "in_progress", createdAt: Date.now() - 100000 },
+      { id: 'g2', text: "Automatizar relatórios de hotéis usando scripts", status: "todo", createdAt: Date.now() - 80000 },
+      { id: 'g3', text: "Renovar contrato com plataforma de assinatura eletrônica", status: "done", createdAt: Date.now() - 50000 }
+    ];
+
+    let tasks = [];
+    let goals = [];
+    let activeDate = todayStr;
+
+    // Inicializar aplicação
+    function initApp() {
+      // 1. Carregar Tarefas
+      try {
+        const storedTasks = localStorage.getItem('3a_logistics_notion_agenda');
+        if (storedTasks) {
+          tasks = JSON.parse(storedTasks);
+        } else {
+          tasks = [...defaultTasks];
+          saveToLocalStorage();
+        }
+      } catch (e) {
+        console.error("Erro ao carregar tarefas do LocalStorage", e);
+        tasks = [...defaultTasks];
+      }
+
+      // 2. Carregar Metas
+      try {
+        const storedGoals = localStorage.getItem('3a_logistics_goals');
+        if (storedGoals) {
+          goals = JSON.parse(storedGoals);
+        } else {
+          goals = [...defaultGoals];
+          saveGoalsToLocalStorage();
+        }
+      } catch (e) {
+        console.error("Erro ao carregar metas do LocalStorage", e);
+        goals = [...defaultGoals];
+      }
+
+      // Configurar inputs de data da agenda
+      const picker = document.getElementById('agenda-date-picker');
+      if (picker) {
+        picker.value = activeDate;
+        picker.addEventListener('change', (e) => {
+          if (e.target.value) {
+            activeDate = e.target.value;
+            renderApp();
+          }
+        });
+      }
+
+      setupTabs();
+      setupDateNavigator();
+      updateDateHeader();
+      renderApp();
+    }
+
+    // Persistência
+    function saveToLocalStorage() {
+      try {
+        localStorage.setItem('3a_logistics_notion_agenda', JSON.stringify(tasks));
+      } catch (e) {
+        console.error("Erro ao salvar tarefas", e);
+      }
+    }
+
+    function saveGoalsToLocalStorage() {
+      try {
+        localStorage.setItem('3a_logistics_goals', JSON.stringify(goals));
+      } catch (e) {
+        console.error("Erro ao salvar metas", e);
+      }
+    }
+
+    // Configurar Navegador de Datas
+    function setupDateNavigator() {
+      document.getElementById('btn-prev-day').addEventListener('click', () => {
+        const d = new Date(activeDate + 'T12:00:00');
+        d.setDate(d.getDate() - 1);
+        activeDate = toISOStringLocal(d);
+        document.getElementById('agenda-date-picker').value = activeDate;
+        renderApp();
+      });
+
+      document.getElementById('btn-next-day').addEventListener('click', () => {
+        const d = new Date(activeDate + 'T12:00:00');
+        d.setDate(d.getDate() + 1);
+        activeDate = toISOStringLocal(d);
+        document.getElementById('agenda-date-picker').value = activeDate;
+        renderApp();
+      });
+
+      document.getElementById('btn-today').addEventListener('click', () => {
+        activeDate = todayStr;
+        document.getElementById('agenda-date-picker').value = activeDate;
+        renderApp();
+      });
+    }
+
+    // Data de hoje no cabeçalho
+    function updateDateHeader() {
+      const options = { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' };
+      const today = new Date();
+      let dateString = today.toLocaleDateString('pt-BR', options);
+      dateString = dateString.charAt(0).toUpperCase() + dateString.slice(1);
+      
+      const el = document.getElementById('current-date');
+      if (el) el.textContent = dateString;
+    }
+
+    // Título do dia selecionado
+    function updateSelectedDateTitle() {
+      const options = { weekday: 'long', day: 'numeric', month: 'long' };
+      const d = new Date(activeDate + 'T12:00:00');
+      let dateString = d.toLocaleDateString('pt-BR', options);
+      dateString = dateString.charAt(0).toUpperCase() + dateString.slice(1);
+      
+      const el = document.getElementById('selected-date-title');
+      if (el) el.textContent = `Agenda de: ${dateString}`;
+    }
+
+    // Contra XSS
+    function escapeHTML(str) {
+      return str.replace(/[&<>'"]/g, 
+        tag => ({
+          '&': '&amp;',
+          '<': '&lt;',
+          '>': '&gt;',
+          "'": '&#39;',
+          '"': '&quot;'
+        }[tag] || tag)
+      );
+    }
+
+    // Smart Tags
+    function hasHotelTag(text) {
+      const clean = text.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+      return clean.includes('hotel') || clean.includes('hoteis');
+    }
+
+    function hasFinanceTag(text) {
+      const clean = text.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+      return clean.includes('chefe') || clean.includes('pagamento') || clean.includes('boleto');
+    }
+
+    // Progresso
+    function updateProgressBar() {
+      const total = tasks.length;
+      const completed = tasks.filter(t => t.completed).length;
+      const percentage = total > 0 ? Math.round((completed / total) * 100) : 0;
+      
+      const percentEl = document.getElementById('progress-percent');
+      const barEl = document.getElementById('progress-bar');
+      
+      if (percentEl) percentEl.textContent = `${percentage}%`;
+      if (barEl) barEl.style.width = `${percentage}%`;
+    }
+
+    // Abas
+    function setupTabs() {
+      const navBtns = document.querySelectorAll('.nav-btn');
+      navBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+          switchTab(btn.dataset.tab);
+        });
+      });
+    }
+
+    function switchTab(tabId) {
+      document.querySelectorAll('.nav-btn').forEach(b => {
+        if (b.dataset.tab === tabId) b.classList.add('active');
+        else b.classList.remove('active');
+      });
+
+      const contents = ['agenda', 'goals', 'analytics'];
+      contents.forEach(id => {
+        const el = document.getElementById(`tab-content-${id}`);
+        if (el) {
+          if (id === tabId) el.style.display = 'block';
+          else el.style.display = 'none';
+        }
+      });
+
+      if (tabId === 'agenda') renderApp();
+      else if (tabId === 'goals') renderGoals();
+      else if (tabId === 'analytics') renderAnalytics();
+    }
+
+    // RENDERIZADOR: AGENDA DIÁRIA
+    function renderApp() {
+      const lists = {
+        manha: document.getElementById('manha-list'),
+        tarde: document.getElementById('tarde-list'),
+        noite: document.getElementById('noite-list'),
+        inbox: document.getElementById('inbox-list')
+      };
+
+      Object.values(lists).forEach(el => { if (el) el.innerHTML = ''; });
+      
+      // Auto-inicializar data com demandas de rotina se estiver vazia
+      ensureDateInitialized(activeDate);
+
+      // Filtrar demandas da data ativa
+      const activeTasks = tasks.filter(t => t.date === activeDate);
+
+      const grouped = { manha: [], tarde: [], noite: [], inbox: [] };
+      activeTasks.forEach(task => {
+        if (grouped[task.period]) grouped[task.period].push(task);
+        else grouped.inbox.push(task);
+      });
+
+      Object.keys(lists).forEach(period => {
+        const listEl = lists[period];
+        if (!listEl) return;
+
+        const periodTasks = grouped[period];
+
+        if (periodTasks.length === 0) {
+          listEl.innerHTML = `<div class="empty-placeholder">Nenhuma demanda agendada</div>`;
+          return;
+        }
+
+        // Ordenação: Alertas primeiro, depois pendentes
+        periodTasks.sort((a, b) => {
+          if (a.isAlert !== b.isAlert) return a.isAlert ? -1 : 1;
+          if (a.completed !== b.completed) return a.completed ? 1 : -1;
+          return a.createdAt - b.createdAt;
+        });
+
+        periodTasks.forEach(task => {
+          const item = document.createElement('div');
+          // Adiciona a classe alert-item caso seja o alerta de segunda/sexta
+          item.className = `task-item ${task.completed ? 'completed' : ''} ${task.isAlert ? 'alert-item' : ''}`;
+          item.dataset.id = task.id;
+
+          let tagsHTML = '';
+          if (task.isAlert) {
+            tagsHTML += `<span class="tag-badge tag-alert">⚠️ IMPORTANTE</span>`;
+          } else {
+            if (hasHotelTag(task.text)) tagsHTML += `<span class="tag-badge tag-hotel">🏨 Hotel</span>`;
+            if (hasFinanceTag(task.text)) tagsHTML += `<span class="tag-badge tag-finance">💳 Financeiro</span>`;
+          }
+
+          item.innerHTML = `
+            <button class="task-checkbox-btn ${task.completed ? 'checked' : ''}" aria-label="Concluir tarefa">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="20 6 9 17 4 12"></polyline>
+              </svg>
+            </button>
+            <div class="task-content">
+              <div class="task-text">
+                ${escapeHTML(task.text)}
+                ${tagsHTML}
+              </div>
+              <div class="task-actions">
+                <select class="period-move-select" aria-label="Mover período">
+                  <option value="manha" ${task.period === 'manha' ? 'selected' : ''}>🌅 Manhã</option>
+                  <option value="tarde" ${task.period === 'tarde' ? 'selected' : ''}>☀️ Tarde</option>
+                  <option value="noite" ${task.period === 'noite' ? 'selected' : ''}>🌆 Noite</option>
+                  <option value="inbox" ${task.period === 'inbox' ? 'selected' : ''}>📥 Inbox</option>
+                </select>
+                <button class="btn-delete-task" title="Excluir tarefa" aria-label="Excluir tarefa">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="3 6 5 6 21 6"></polyline>
+                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                  </svg>
+                </button>
+              </div>
+            </div>
+          `;
+
+          item.querySelector('.task-checkbox-btn').addEventListener('click', () => toggleTask(task.id));
+          item.querySelector('.period-move-select').addEventListener('change', (e) => moveTask(task.id, e.target.value));
+          item.querySelector('.btn-delete-task').addEventListener('click', () => deleteTask(task.id));
+
+          listEl.appendChild(item);
+        });
+      });
+
+      updateProgressBar();
+    }
+
+    // Ações de Tarefa
+    function addTask(text, period) {
+      const newTask = {
+        id: Date.now().toString() + Math.random().toString(36).substr(2, 4),
+        text: text.trim(),
+        period: period,
+        completed: false,
+        createdAt: Date.now(),
+        date: activeDate
+      };
+
+      tasks.push(newTask);
+      saveToLocalStorage();
+      renderApp();
+    }
+
+    function toggleTask(id) {
+      tasks = tasks.map(t => {
+        if (t.id === id) return { ...t, completed: !t.completed };
+        return t;
+      });
+      saveToLocalStorage();
+      renderApp();
+    }
+
+    function moveTask(id, newPeriod) {
+      tasks = tasks.map(t => {
+        if (t.id === id) return { ...t, period: newPeriod };
+        return t;
+      });
+      saveToLocalStorage();
+      renderApp();
+    }
+
+    function deleteTask(id) {
+      const card = document.querySelector(`.task-item[data-id="${id}"]`);
+      if (card) {
+        card.style.opacity = '0';
+        card.style.transform = 'translateY(8px)';
+        card.style.transition = 'all 0.25s ease';
+        setTimeout(() => {
+          tasks = tasks.filter(t => t.id !== id);
+          saveToLocalStorage();
+          renderApp();
+        }, 250);
+      } else {
+        tasks = tasks.filter(t => t.id !== id);
+        saveToLocalStorage();
+        renderApp();
+      }
+    }
+
+    // RENDERIZADOR: METAS FUTURAS
+    function renderGoals() {
+      const cols = {
+        todo: document.getElementById('goal-list-todo'),
+        in_progress: document.getElementById('goal-list-in-progress'),
+        done: document.getElementById('goal-list-done')
+      };
+
+      Object.values(cols).forEach(el => { if (el) el.innerHTML = ''; });
+
+      const grouped = { todo: [], in_progress: [], done: [] };
+      goals.forEach(g => {
+        if (grouped[g.status]) grouped[g.status].push(g);
+        else grouped.todo.push(g);
+      });
+
+      Object.keys(cols).forEach(status => {
+        const listEl = cols[status];
+        if (!listEl) return;
+
+        const statusGoals = grouped[status];
+        if (statusGoals.length === 0) {
+          listEl.innerHTML = `<div class="empty-placeholder">Nenhuma meta ativa</div>`;
+          return;
+        }
+
+        statusGoals.forEach(goal => {
+          const item = document.createElement('div');
+          item.className = 'goal-item';
+
+          let actionsHTML = '';
+          if (status === 'todo') {
+            actionsHTML += `<button class="btn-move-goal" onclick="moveGoal('${goal.id}', 'in_progress')">⚡ Iniciar</button>`;
+          } else if (status === 'in_progress') {
+            actionsHTML += `
+              <button class="btn-move-goal" onclick="moveGoal('${goal.id}', 'todo')">📋 Devolver</button>
+              <button class="btn-move-goal" onclick="moveGoal('${goal.id}', 'done')" style="color: #34d399;">✅ Concluir</button>
+            `;
+          } else if (status === 'done') {
+            actionsHTML += `<button class="btn-move-goal" onclick="moveGoal('${goal.id}', 'in_progress')">⚡ Reabrir</button>`;
+          }
+
+          item.innerHTML = `
+            <span class="goal-item-text">${escapeHTML(goal.text)}</span>
+            <div class="goal-item-actions">
+              <div style="display:flex; gap: 0.35rem;">${actionsHTML}</div>
+              <button class="btn-delete-goal" onclick="deleteGoal('${goal.id}')" title="Excluir meta">
+                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="3 6 5 6 21 6"></polyline>
+                  <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                </svg>
+              </button>
+            </div>
+          `;
+          listEl.appendChild(item);
+        });
+      });
+    }
+
+    window.moveGoal = function(id, newStatus) {
+      goals = goals.map(g => {
+        if (g.id === id) return { ...g, status: newStatus };
+        return g;
+      });
+      saveGoalsToLocalStorage();
+      renderGoals();
+    };
+
+    window.deleteGoal = function(id) {
+      goals = goals.filter(g => g.id !== id);
+      saveGoalsToLocalStorage();
+      renderGoals();
+    };
+
+    // RENDERIZADOR: DESEMPENHO E ANALYTICS
+    function renderAnalytics() {
+      // 1. Taxa Geral
+      const total = tasks.length;
+      const completed = tasks.filter(t => t.completed).length;
+      const rate = total > 0 ? Math.round((completed / total) * 100) : 0;
+      document.getElementById('stat-completion-rate').textContent = `${rate}%`;
+      document.getElementById('stat-total-tasks').textContent = total;
+
+      // 2. Dia mais Produtivo
+      document.getElementById('stat-peak-day').textContent = calculatePeakDay();
+
+      // 3. Gráfico 7 Dias
+      renderChart();
+
+      // 4. Histórico Recente
+      renderHistoryList();
+    }
+
+    function calculatePeakDay() {
+      const completedTasks = tasks.filter(t => t.completed);
+      if (completedTasks.length === 0) return "-";
+      
+      const counts = Array(7).fill(0);
+      completedTasks.forEach(t => {
+        const dObj = new Date(t.date + 'T12:00:00');
+        counts[dObj.getDay()]++;
+      });
+      
+      let maxIdx = 0;
+      let maxVal = 0;
+      for (let i = 0; i < 7; i++) {
+        if (counts[i] > maxVal) {
+          maxVal = counts[i];
+          maxIdx = i;
+        }
+      }
+      const names = ["Domingo", "Segunda", "Terça-feira", "Quarta-feira", "Quinta-feira", "Sexta-feira", "Sábado"];
+      return maxVal > 0 ? names[maxIdx] : "-";
+    }
+
+    function renderChart() {
+      const container = document.getElementById('bar-chart');
+      if (!container) return;
+      container.innerHTML = '';
+
+      const weekdays = ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"];
+
+      for (let i = 6; i >= 0; i--) {
+        const date = new Date();
+        date.setDate(date.getDate() - i);
+        const dateStr = toISOStringLocal(date);
+
+        // Certifica de inicializar caso não tenha dados históricos
+        ensureDateInitialized(dateStr);
+
+        const dayTasks = tasks.filter(t => t.date === dateStr);
+        const dayTotal = dayTasks.length;
+        const dayCompleted = dayTasks.filter(t => t.completed).length;
+        
+        const percentage = dayTotal > 0 ? (dayCompleted / dayTotal) * 100 : 0;
+        const ratio = `${dayCompleted}/${dayTotal}`;
+
+        const wrapper = document.createElement('div');
+        wrapper.className = 'chart-bar-wrapper';
+
+        const barHeight = dayTotal > 0 ? `${percentage}%` : '0%';
+
+        wrapper.innerHTML = `
+          <div class="chart-bar" style="height: ${barHeight};" data-date="${dateStr}">
+            <div class="chart-tooltip">${ratio} Feitas (${Math.round(percentage)}%)</div>
+          </div>
+          <span class="chart-day-label">${weekdays[date.getDay()]}</span>
+          <span class="chart-ratio-label">${ratio}</span>
+        `;
+
+        wrapper.querySelector('.chart-bar').addEventListener('click', () => {
+          activeDate = dateStr;
+          document.getElementById('agenda-date-picker').value = dateStr;
+          switchTab('agenda');
+        });
+
+        container.appendChild(wrapper);
+      }
+    }
+
+    function renderHistoryList() {
+      const container = document.getElementById('history-days-list');
+      if (!container) return;
+      container.innerHTML = '';
+
+      const uniqueDates = [...new Set(tasks.map(t => t.date))].sort((a, b) => b.localeCompare(a));
+      const recentDates = uniqueDates.slice(0, 8);
+
+      if (recentDates.length === 0) {
+        container.innerHTML = `<div class="empty-placeholder">Nenhum histórico disponível</div>`;
+        return;
+      }
+
+      recentDates.forEach(dateStr => {
+        const dayTasks = tasks.filter(t => t.date === dateStr);
+        const total = dayTasks.length;
+        const completed = dayTasks.filter(t => t.completed).length;
+        const percentage = total > 0 ? Math.round((completed / total) * 100) : 0;
+
+        const dateObj = new Date(dateStr + 'T12:00:00');
+        const options = { weekday: 'long', day: 'numeric', month: 'long' };
+        let formatted = dateObj.toLocaleDateString('pt-BR', options);
+        formatted = formatted.charAt(0).toUpperCase() + formatted.slice(1);
+
+        let pctClass = 'low';
+        if (percentage >= 50) pctClass = 'mid';
+        if (percentage >= 80) pctClass = 'high';
+
+        const row = document.createElement('div');
+        row.className = 'history-row';
+        row.dataset.date = dateStr;
+
+        row.innerHTML = `
+          <div class="history-row-left">
+            <span class="history-date">${formatted}</span>
+            <span class="history-ratio">${completed} de ${total} demandas concluídas</span>
+          </div>
+          <div class="history-progress-wrapper">
+            <span class="history-percentage ${pctClass}">${percentage}%</span>
+          </div>
+        `;
+
+        row.addEventListener('click', () => {
+          activeDate = dateStr;
+          document.getElementById('agenda-date-picker').value = dateStr;
+          switchTab('agenda');
+        });
+
+        container.appendChild(row);
+      });
+    }
+
+    // Configurar Eventos Globais
+    document.addEventListener('DOMContentLoaded', () => {
+      initApp();
+
+      // Adicionar tarefa
+      const taskForm = document.getElementById('task-form');
+      if (taskForm) {
+        taskForm.addEventListener('submit', (e) => {
+          e.preventDefault();
+          const input = document.getElementById('task-input');
+          const periodSelect = document.getElementById('task-period');
+
+          if (input && periodSelect && input.value.trim()) {
+            addTask(input.value, periodSelect.value);
+            input.value = '';
+            input.focus();
+          }
+        });
+      }
+
+      // Adicionar meta
+      const goalForm = document.getElementById('goal-form');
+      if (goalForm) {
+        goalForm.addEventListener('submit', (e) => {
+          e.preventDefault();
+          const input = document.getElementById('goal-input');
+          const statusSelect = document.getElementById('goal-status');
+
+          if (input && statusSelect && input.value.trim()) {
+            const newGoal = {
+              id: Date.now().toString() + Math.random().toString(36).substr(2, 4),
+              text: input.value.trim(),
+              status: statusSelect.value,
+              createdAt: Date.now()
+            };
+            goals.push(newGoal);
+            saveGoalsToLocalStorage();
+            input.value = '';
+            renderGoals();
+          }
+        });
+      }
+    });
+  </script>
+</body>
+</html>
